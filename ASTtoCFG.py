@@ -451,7 +451,7 @@ def find_paths_main(cfg, paths):
 
 
 # reading JSON from a File
-with open("Benchmarks/max3.c.ast.json") as json_file:
+with open("Benchmarks/loops.c.ast.json") as json_file:
     data = json.load(json_file)
 
 cfg = []  # array of cfgs

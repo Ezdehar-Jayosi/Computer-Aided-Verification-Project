@@ -29,34 +29,33 @@ def make_T(variables):
 
 
 def getLabel(cond_label):
-    print("---------------------//// " + cond_label)
     if "<=" in cond_label:
-        label_arr = cond_label.split(">=")
-        op = ">="
-    if ">=" in cond_label:
         label_arr = cond_label.split("<=")
         op = "<="
-    if "<" in cond_label:
+
+    elif ">=" in cond_label:
+        label_arr = cond_label.split("<")
+        op = ">="
+
+    elif "<" in cond_label:
         label_arr = cond_label.split("<")
         op = "<"
-    if ">" in cond_label:
+    elif ">" in cond_label:
         label_arr = cond_label.split(">")
         op = ">"
-    if "==" in cond_label:
+    elif "==" in cond_label:
         label_arr = cond_label.split("==")
         op = "=="
-    if "!=" in cond_label:
+    elif "!=" in cond_label:
         label_arr = cond_label.split("!=")
         op = "!="
 
     var = label_arr[0]
     value = label_arr[1]
-
     r_var = var.replace('(', '').replace(')', '')
     r_var = r_var.strip()
     value = value.replace('(', '').replace(')', '')
     value = value.strip()
-    print("var is " + var + "value is " + value)
     # if the var is and arr
     if value.endswith("]"):
         n_value = value[:value.index("[")]
@@ -69,7 +68,6 @@ def getLabel(cond_label):
         arr_name = arr_name.strip('(')
         arr_index = r_var[r_var.index("[") + 1:r_var.rindex("]")]
         var = " Select ( " + arr_name + "," + arr_index + ")"
-    print("var + op + value " + var + " " + op + " " + value)
     return var + " " + op + " " + value
 
 
@@ -77,19 +75,15 @@ def condition_fol(route, indx):
     route[indx]["T"] = route[indx + 1].get("T")
     route[indx]["var"] = route[indx + 1].get("var")
     label = getLabel(route[indx].get("label"))
-    print("////////////////// "+label)
     r = " And (" + route[indx + 1].get("R") + ", "
     if route[indx].get("node").trueNode.id == route[indx + 1].get("id"):
         route[indx]["R"] = r + label + " )"
-        print("////////////////// " + route[indx]["R"])
     else:
         route[indx]["R"] = r + " Not ( " + label + ") )"
-        print("////////////////// " + route[indx]["R"])
 
 
 
 def setTR_v1(route, indx):
-    print("============= " + (route[indx].get("node").label))
     route[indx]["R"] = route[indx + 1]["R"]
     route[indx]["T"] = route[indx + 1]["T"]
     route[indx]["var"] = route[indx + 1]["var"]
@@ -102,12 +96,10 @@ def setTR_v1(route, indx):
             value = value.replace('(', '').replace(')', '')
             value = value.strip()
             if value.endswith("]"):
-                print("============ here")
                 n_value = value[:value.index("[")]
                 n_value = n_value.strip('(')
                 arr_index = value[value.index("[") + 1:value.rindex("]")]
                 value = " Select ( " + n_value + "," + arr_index + ")"
-                print("============ new_value")
             # print("==== var is =====" + var.strip() + "======== val is ======== "+value)
             # print("T is   "+route[indx].get("T"))
             route[indx]["T"] = route[indx].get("T").replace(" " + var.strip(), " " + value.strip())
