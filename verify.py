@@ -60,9 +60,7 @@ def checkPathCorrectness(path, exec_str, first_Inv):
 
     last_Inv = lastInv(path, path[last_var_indx].get("var"), last_var_indx)
     forall = forAll(path[0].get("node").variables, path[last_var_indx].get("var"))
-    #print("first_Inv " + first_Inv)
-    #print("last_Inv " + last_Inv)
-    #print("forall " + forall)
+  
     if path[len(path) - 1].get("type") == "ensures":
         return_var = path[len(path) - 1].get("return_value")
         post_node = post_node.replace("ret", return_var)
@@ -73,12 +71,10 @@ def checkPathCorrectness(path, exec_str, first_Inv):
     for t1 in (path[0].get("T")[1:-1]).split(',,'):
         var_name = path[0].get("var")[i].get("id").strip()
         var_name = " ".join(var_name.split())
-        # print(var_name +"!=" +(" ".join(t1.split())) + str(var_name != (" ".join(t1.split()))))
-        # print("s.add(" + "_" + var_name + " == " + " ".join(t1.replace(",", "").split()) + ")")
-        # exec("s.add(" + "_" + var_name + " == " + " ".join(t1.split()) + ")")
+
         if var_name != (" ".join(t1.split())):
             conditions += var_name + " == " + " ".join(t1.split()) + ", "
-        # post_node = post_node.replace(var_name, " _" + var_name + " ")
+
         i += 1
     conditions = conditions[:-2]
     # actual_line =
@@ -104,16 +100,9 @@ def checkPathCorrectness(path, exec_str, first_Inv):
             s_str += ", "
         s_str += "Not(" + " ".join(post_node.split()) + ")"
     s_str += "), "+last_Inv + ")))"
-    #print(s_str)
-    #exec(s_str)
+
     exec_str.append(s_str)
-    # print(s.to_smt2())
-    #res = s.check()
-    #print(s.to_smt2() + "------------------------------------------")
-    # if res == sat:
-    # print(s.model())
-    # else:
-    # print("path is unsat")
+
 
 def declare_variables(path, exec_str):
     variables = path[0].get("node").variables
@@ -132,40 +121,24 @@ def declare_variables(path, exec_str):
                 inv += " ArraySort(IntSort(), IntSort()), "
                 exec_str.append(var_name + " = Array('" + var_name + "', IntSort(), IntSort())")
                 exec_str.append ("_" + var_name + " = Array('" + var_name + "', IntSort(), IntSort())")
-                #exec(var_name + " = Array('" + var_name + "', IntSort(), IntSort())")
-                #exec("_" + var_name + " = Array('" + var_name + "', IntSort(), IntSort())")
-                #print(var_name + " = Array('" + var_name + "', IntSort(), IntSort())")
-                #print("_" + var_name + " = Array('_" + var_name + "', IntSort(), IntSort())")
             else:  # not Array variable
                 inv += "IntSort(), "
                 exec_str.append (var_name + " = Int('" + var_name + "')")
                 exec_str.append("_" + var_name + " = Int('" + "_" + var_name + "')")
-                #exec(var_name + " = Int('" + var_name + "')")
-                #exec("_" + var_name + " = Int('" + "_" + var_name + "')")
-                #print(var_name + " = Int('" + var_name + "')")
-                #print("_" + var_name + " = Int('_" + var_name + "')")
         elif var_type == "DOUBLE":
 
             if var_name.endswith("]"):  # Array variable
                 inv += " ArraySort(IntSort(), RealSort()), "
                 exec_str.append(var_name + " = Array('" + var_name + "', IntSort(), RealSort())")
                 exec_str.append( "_" + var_name + " = Array('" + var_name + "', IntSort(), RealSort())")
-                #exec(var_name + " = Array('" + var_name + "', IntSort(), RealSort())")
-                #exec("_" + var_name + " = Array('" + var_name + "', IntSort(), RealSort())")
-                # print(var_name + " = Array('" + var_name + "', IntSort(), RealSort())")
-                # print("_" + var_name + " = Array('" + var_name + "', IntSort(), RealSort())")
+
             else:  # not Array variable
                 inv += "RealSort(), "
                 exec_str.append( var_name + " = Real('" + var_name + "')")
                 exec_str.append("_" + var_name + " = Real('" + var_name + "')")
-                #exec(var_name + " = Real('" + var_name + "')")
-                #exec("_" + var_name + " = Real('" + var_name + "')")
-                # print(var_name + " = Real('" + var_name + "')")
-                # print("_" + var_name + " = Real('" + var_name + "')")
+
         i += 1
     inv += "BoolSort())"
-    #print("inv is " + inv)
-    #exec(inv)
     exec_str.append(inv)
     first_Inv = first_Inv[:-2] + ")"
     return first_Inv
