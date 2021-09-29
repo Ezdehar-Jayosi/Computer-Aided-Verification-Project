@@ -1,0 +1,28 @@
+void assert(int cond);
+inline void ensures_max3_array() {ensures_max3_array(((ret == arr[i]) || (ret == arr[j]) || (ret == arr[k])) && (ret <= arr[i]) && (ret <= arr[j]) && (ret <= arr[k]));}
+int max3_array(int arr[100], int i, int j, int k) {
+    if (arr[i] < arr[j]) {
+        if (arr[i] < arr[k]) return arr[i];
+    }
+    else {
+        if (arr[j] < arr[k]) return arr[j];
+    }
+    return arr[k];
+}
+inline void ensures_max3_array_indirect() {ensures_max3_array_indirect(((ret == arr[is_arr[0]]) || (ret == arr[is_arr[1]]) || (ret == arr[is_arr[2]])) && (ret <= arr[is_arr[0]]) && (ret <= arr[is_arr[1]]) && (ret <= arr[is_arr[2]]));}
+int max3_array_indirect(int arr[100], int is_arr[3]) {
+    if (arr[is_arr[0]] < arr[is_arr[1]]) {
+        if (arr[is_arr[0]] < arr[is_arr[2]]) return arr[is_arr[0]];
+    }
+    else {
+        if (arr[is_arr[1]] < arr[is_arr[2]]) return arr[is_arr[1]];
+    }
+    return arr[is_arr[2]];
+}
+void sort3(int arr[100], int i) {
+    int tmp;
+    if (arr[i] > arr[i + 1]) { tmp = (arr[i]); (arr[i]) = (arr[i + 1]); (arr[i + 1]) = tmp; };
+    if (arr[i + 1] > arr[i + 2]) { tmp = (arr[i + 1]); (arr[i + 1]) = (arr[i + 2]); (arr[i + 2]) = tmp; };
+    if (arr[i] > arr[i + 1]) { tmp = (arr[i]); (arr[i]) = (arr[i + 1]); (arr[i + 1]) = tmp; };
+         assert((arr[i] <= arr[i + 1]) && (arr[i + 1] <= arr[i + 2]));
+}
